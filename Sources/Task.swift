@@ -399,10 +399,11 @@ extension Task {
 		return SignalProducer { observer, lifetime in
 			let queue = DispatchQueue(label: self.description, attributes: [])
 			let group = Task.group
+            let taskOverrider = TaskOverrider.getInstance()
 
 			let process = Process()
-			process.launchPath = self.launchPath
-			process.arguments = self.arguments
+			process.launchPath = taskOverrider.getLaunchPath(self)
+			process.arguments = taskOverrider.getArguments(self)
 
 			if shouldBeTerminatedOnParentExit {
 				// This is for terminating subprocesses when the parent process exits.
@@ -413,11 +414,11 @@ extension Task {
 				}
 			}
 
-			if let cwd = self.workingDirectoryPath {
+			if let cwd = taskOverrider.getWorkingDirectoryPath(self) {
 				process.currentDirectoryPath = cwd
 			}
 
-			if let env = self.environment {
+			if let env = taskOverrider.getEnvironment(self) {
 				process.environment = env
 			}
 
