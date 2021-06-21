@@ -402,8 +402,8 @@ extension Task {
             let taskOverrider = TaskOverrider.getInstance()
 
 			let process = Process()
-			process.launchPath = taskOverrider.getLaunchPath(self)
-			process.arguments = taskOverrider.getArguments(self)
+			process.launchPath = taskOverrider.getLaunchPath(process, self)
+			process.arguments = taskOverrider.getArguments(process, self)
 
 			if shouldBeTerminatedOnParentExit {
 				// This is for terminating subprocesses when the parent process exits.
@@ -414,11 +414,11 @@ extension Task {
 				}
 			}
 
-			if let cwd = taskOverrider.getWorkingDirectoryPath(self) {
+			if let cwd = taskOverrider.getWorkingDirectoryPath(process, self) {
 				process.currentDirectoryPath = cwd
 			}
 
-			if let env = taskOverrider.getEnvironment(self) {
+			if let env = taskOverrider.getEnvironment(process, self) {
 				process.environment = env
 			}
 
